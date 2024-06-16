@@ -4,7 +4,7 @@
   "description": "Resful APIs Server for Todo-List ap",
   "main": "src/index.ts",
   "scripts": {
-    "build": "rm -f -r dist && tsc && tsc-alias",
+    "build": "rm -f -r dist && tsc --project tsconfig.prod.json && tsc-alias",
     "dev": "nodemon",
     "lint": "eslint \"{src,apps,libs,__tests__}/**/*.ts\"",
     "test": "jest"
@@ -12,7 +12,6 @@
   "author": "Long",
   "license": "ISC",
   "dependencies": {
- 
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.11",
@@ -27,6 +26,7 @@
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.14.2",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
@@ -46,5 +46,8 @@
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.3.3"
+  },
+  "resolutions": {
+    "string-width": "4.2.3"
   }
 }
