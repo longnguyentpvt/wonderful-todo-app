@@ -6,6 +6,8 @@ import express, {
 
 import MainCtrl from "@app/controllers/main.ctrl";
 
+import { config as dbConfig } from "@app/db";
+
 import { systemConfig } from "@app/data/configuration";
 
 import { ApiError, ApiErrorCode } from "@app/types/app";
@@ -18,7 +20,7 @@ class App {
 
     systemConfig();
 
-    // dbConfig();
+    dbConfig();
 
     this.initializeMiddlewares();
 

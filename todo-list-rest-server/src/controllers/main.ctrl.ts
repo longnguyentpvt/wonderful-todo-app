@@ -6,6 +6,8 @@ import {
 import { hello } from "@app/services/auth";
 import { auth } from "@app/services/session-scope";
 
+import { TodoTask } from "@app/db";
+
 import { HealthCheckRp, TestAuthedRp } from "@app/types/api-response";
 import { AppController, AuthRequest } from "@app/types/app";
 
@@ -22,6 +24,9 @@ class Ctrl implements AppController {
         body
       } = req;
       const time = dayjs().tz();
+
+      const tasks = await TodoTask.findAll();
+      console.debug("no tasks", tasks.length);
 
       res.status(200).send({
         path,
