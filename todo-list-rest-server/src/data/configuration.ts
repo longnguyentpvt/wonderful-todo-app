@@ -32,9 +32,9 @@ export const systemConfig = (): void => {
 export const configuration = {
   port: PORT,
   env: ENV,
-  dbHost: DB_HOST,
+  dbHost: DB_HOST ?? "localhost",
   dbPort: parseInt(DB_PORT ?? "1883", 10),
-  dbUsn: DB_USN,
-  dbPassword: DB_PASSWORD,
-  dbName: DB_NAME
+  dbUsn: DB_USN ?? "admin",
+  dbPassword: DB_PASSWORD ?? "...",
+  dbName: DB_NAME ?? "todo_app"
 };
