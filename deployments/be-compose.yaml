@@ -1,0 +1,15 @@
+version: "3.6"
+services:
+  todo-list-rest-server:
+    image: shineyup/monorepo-rest-server:latest
+    ports:
+      - 1990:1990
+    environment:
+      - PORT=1990
+      - ENV=production
+    networks:
+      - task-rest-platform
+networks:
+  task-rest-platform:
+    name: task-rest-platform
+    driver: bridge

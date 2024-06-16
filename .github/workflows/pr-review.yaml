@@ -1,0 +1,48 @@
+name: PR Review
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - "dev"
+
+jobs:
+  review:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: "Install Dependencies"
+        run: |
+          yarn
+
+      - name: "Lint Check"
+        run: yarn lint
+
+      - name: "Build Check"
+        run: yarn build
+
+      - name: "Fix yarn issue temporarily"
+        run: |
+          rm ./todo-list-app/yarn.lock
+          rm ./todo-list-rest-server/yarn.lock
+          yarn
+
+      - name: "Unit test + Functional test"
+        run: yarn test
+      
+      - name: "E2E install"
+        run: |
+          yarn e2e-testing install
+          yarn e2e-testing install:playwright
+
+      - name: "Start app locally"
+        run: |
+          yarn dev:server &
+          yarn dev:fe &
+      
+      - name: "E2E run"
+        run: yarn e2e-testing test

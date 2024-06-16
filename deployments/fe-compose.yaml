@@ -1,0 +1,12 @@
+version: "3.6"
+services:
+  todo-list-app:
+    image: shineyup/monorepo-nextjs-fe:latest
+    ports:
+      - 3001:3000
+    networks:
+      - task-platform
+networks:
+  task-platform:
+    name: task-platform
+    driver: bridge
