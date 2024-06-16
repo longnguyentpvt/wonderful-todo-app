@@ -1,0 +1,7 @@
+.task-card {
+  &:hover {
+    cursor: pointer;
+    // box-shadow: var(--bs-box-shadow-lg) !important;
+    background-color: var(--bs-gray-200);
+  }
+}
