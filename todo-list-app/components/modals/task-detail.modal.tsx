@@ -88,7 +88,7 @@ const TaskDetailModal: React.FC<DetailModalProps> = ({
           </Col>
           <Col xs={ 6 }>
             <div className="d-grid">
-              <Button variant="danger" onClick={ () => onAction(taskId, "complete") }>
+              <Button variant="danger" onClick={ () => onAction(taskId, "delete") }>
                 DELETE
               </Button>
             </div>

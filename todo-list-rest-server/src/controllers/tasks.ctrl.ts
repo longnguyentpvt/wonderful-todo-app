@@ -83,6 +83,7 @@ class Ctrl implements AppController {
             break;
           case NewTaskError.InvalidDueDate:
             rpCode = ApiErrorCode.INVALID_DATA;
+            rpMessage = "Due date is invalid!";
             break;
           default:
             rpMessage = "System Error!";
