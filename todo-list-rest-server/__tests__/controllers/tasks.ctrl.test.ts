@@ -19,7 +19,7 @@ describe("Test Tasks CRUD Apis", () => {
   let creaatedTaskId: number;
   const createdTaskName = "Test case";
   const createdTaskDesc = "Task desciption";
-  const dueDate = dayjs().toISOString();
+  const dueDate = dayjs().add(10, "day").toISOString();
 
   test("List tasks api", async () => {
     const rp = await request(app).get("/tasks/list?page=1&pageSize=10&filterName=Wonderful&filterStatus=Done")
