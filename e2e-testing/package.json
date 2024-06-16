@@ -9,6 +9,8 @@
   },
   "scripts": {
     "test": "playwright test",
-    "install:playwright": "playwright install --with-deps"
+    "test:prod": "playwright test prod.spec.ts",
+    "install:playwright": "playwright install --with-deps",
+    "show-report": "playwright show-report"
   }
 }

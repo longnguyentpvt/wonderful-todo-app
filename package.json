@@ -8,7 +8,7 @@
     "husky": "^9.0.11"
   },
   "scripts": {
-    "prepare": "husky && yarn rest-server && yarn fe-app && yarn dev-configs",
+    "prepare": "husky && yarn rest-server && yarn fe-app && yarn dev-configs && yarn e2e-testing",
     "rest-server": "yarn --cwd todo-list-rest-server",
     "fe-app": "yarn --cwd todo-list-app",
     "dev-configs": "yarn --cwd dev-configs",
