@@ -5,8 +5,7 @@ import express, {
 } from "express";
 
 import MainCtrl from "@app/controllers/main.ctrl";
-
-import { config as dbConfig } from "@app/db";
+import TasksCtrl from "@app/controllers/tasks.ctrl";
 
 import { systemConfig } from "@app/data/configuration";
 
@@ -20,8 +19,6 @@ class App {
 
     systemConfig();
 
-    dbConfig();
-
     this.initializeMiddlewares();
 
     this.initControllers();
@@ -31,8 +28,10 @@ class App {
 
   private initControllers(): void {
     const mainCtrl = new MainCtrl();
+    const tasksCtrl = new TasksCtrl();
 
     this.app.use("/test", mainCtrl.initRoute());
+    this.app.use("/tasks", tasksCtrl.initRoute());
   }
 
   private initializeMiddlewares(): void {

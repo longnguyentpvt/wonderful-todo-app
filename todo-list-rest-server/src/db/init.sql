@@ -17,7 +17,6 @@ CREATE TABLE `todo_task` (
   `status` varchar(20) DEFAULT NULL,
   `due_date` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),

@@ -1,1 +1,5 @@
-export type TaskStatus = "Pending" | "InProgress" | "Done";
+export enum TaskStatus {
+  Pending = "Pending",
+  InProgress = "InProgress",
+  Done = "Done"
+}
