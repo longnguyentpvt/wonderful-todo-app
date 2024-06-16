@@ -23,7 +23,22 @@ jobs:
           rm ./todo-list-app/yarn.lock
           rm ./todo-list-rest-server/yarn.lock
           yarn
-  
+          
+      - name: 'Setup test .env'
+        run: |
+          cd todo-list-rest-server
+          cat .env.template
+          sed -i "s/{{ENV}}/development/g" .env.template
+          sed -i "s/{{PORT}}/1990/g" .env.template
+          sed -i "s|{{DB_HOST}}|dropsong-database-dev.cnoepyc88uql.us-east-1.rds.amazonaws.com|g" .env.template
+          sed -i "s/{{DB_PORT}}/3306/g" .env.template
+          sed -i "s/{{DB_USN}}/${{ secrets.DB_USN_DEV }}/g" .env.template
+          sed -i "s/{{DB_PASSWORD}}/${{ secrets.DB_PWD_DEV }}/g" .env.template
+          sed -i "s/{{DB_NAME}}/${{ secrets.DB_NAME_DEV }}/g" .env.template
+          cp .env.template .env
+          cat .env
+          cd ../
+
       - name: "Unit test + Functional test"
         run: yarn test
       
