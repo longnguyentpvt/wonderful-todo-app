@@ -1,0 +1,40 @@
+$topbar-height: 3.6rem;
+
+.db-layout {
+  .db-layout__top-profile-bar-container {
+    height: $topbar-height;
+
+    .top-logo {
+      height: 1.2rem;
+      width: auto;
+    }
+
+    .topbar__profile-avatar {
+      cursor: pointer;
+    }
+    
+    .topbar__profile-avatar-icon {
+      width: 1.5rem;
+      height: auto;
+    }
+  }
+
+  .topbar_notification {
+    cursor: pointer;
+    
+    .svg-icon {
+      width: 1.4rem;
+      height: auto;
+    }
+    
+    .topbar_noti-message-badge {
+      top: -0.3rem !important;
+      right: 0;
+      @include transform(translateX(50%));
+    }
+  }
+
+  .db-layout__main-container {
+    margin-top: $topbar-height;
+  }
+}
