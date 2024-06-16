@@ -1,0 +1,103 @@
+name: Prod Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Which app'
+        required: true
+        type: string
+      version:
+        description: 'Which version'
+        required: true
+        type: string
+
+jobs:
+  fe-deploy:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.inputs.app == 'todo-list-app' }}
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User ubuntu
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+          cat ~/.ssh/staging.key
+        env:
+          SSH_KEY: ${{ secrets.STAGING_PEM }}
+          SSH_HOST: 15.235.146.167
+
+      - name: Stop the app
+        run: ssh staging 'cd /home/ubuntu/wonderful-task/todo-list-app && sudo docker compose stop && sudo docker compose down --rmi all'
+
+      - name: Start the app
+        run: ssh staging 'cd /home/ubuntu/wonderful-task/todo-list-app && sudo docker compose pull && sudo docker compose up --no-start && sudo docker compose start'
+
+      # - name: Push Git Tag
+      #   run: |
+      #     git config user.name "GitHub Actions"
+      #     git config user.email "github-actions@users.noreply.github.com"
+      #     NEW_TAG=app/todo-list-app/${{ env.VERSION}}
+      #     git tag $NEW_TAG
+      #     git push origin $NEW_TAG
+
+  be-deploy:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.inputs.app == 'todo-list-rest-server' }}
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User ubuntu
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_KEY: ${{ secrets.STAGING_PEM }}
+          SSH_HOST: 15.235.146.167
+
+      - name: Stop the app
+        run: ssh staging 'cd /home/ubuntu/wonderful-task/todo-list-rest-server && sudo docker compose stop && sudo docker compose down --rmi all'
+
+      - name: Start the app
+        run: ssh staging 'cd /home/ubuntu/wonderful-task/todo-list-rest-server && sudo docker compose pull && sudo docker compose up --no-start && sudo docker compose start'
+
+      # - name: Push Git Tag
+      #   run: |
+      #     git config user.name "GitHub Actions"
+      #     git config user.email "github-actions@users.noreply.github.com"
+      #     NEW_TAG=app/todo-list-rest-server/${{ env.VERSION}}
+      #     git tag $NEW_TAG
+      #     git push origin $NEW_TAG

@@ -1,0 +1,100 @@
+name: Release Review
+
+on:
+  push:
+    branches:
+      - release/*
+
+jobs:
+  review:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: "Install Dependencies"
+        run: |
+          yarn
+
+      - name: "Fix yarn issue temporarily"
+        run: |
+          rm ./todo-list-app/yarn.lock
+          rm ./todo-list-rest-server/yarn.lock
+          yarn
+  
+      - name: "Unit test + Functional test"
+        run: yarn test
+      
+      - name: "E2E install"
+        run: |
+          yarn e2e-testing install
+          yarn e2e-testing install:playwright
+
+      - name: "Start app locally"
+        run: |
+          yarn dev:server &
+          dev:fe &
+      
+      - name: "E2E run"
+        run: yarn e2e-testing test
+
+  build-image:
+    runs-on: ubuntu-22.04
+    needs: review
+    env:
+      FE_IMG: shineyup/monorepo-nextjs-fe
+      BE_IMG: shineyup/monorepo-rest-server
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+  
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: 'Get tag version'
+        run: |
+          echo "Tag name from GITHUB_REF: $GITHUB_REF"
+          echo "Tag name from github.ref_name: ${{  github.ref_name }}"      
+          TAGNAME=${GITHUB_REF#refs/heads/}
+          VER=${TAGNAME##*/}
+          echo "Version $VER"
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
+      - name: "Setup files for Docker FE build"
+        run: |
+          cp dev-configs/base.tsconfig.json todo-list-app/base.tsconfig.json
+          cd todo-list-app
+          sed -i "s|../dev-configs|.|g" tsconfig.json
+          cat tsconfig.json
+          cd ../
+
+      - name: Build and push FE image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./todo-list-app
+          push: true
+          tags: ${{ env.FE_IMG }}:${{ env.VERSION }},${{ env.FE_IMG }}:latest
+
+      - name: "Install BE Dependencies & build"
+        run: |
+          cd todo-list-rest-server
+          yarn
+          yarn build
+          cd ../
+
+      - name: Build and push BE image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./todo-list-rest-server
+          push: true
+          tags: ${{ env.BE_IMG }}:${{ env.VERSION }},${{ env.BE_IMG }}:latest
