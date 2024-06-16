@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito:300,400,400i,500,600,700");
+
+@import './bootstrap-utilities.scss';
+
+@import "~bootstrap/scss/utilities";
+
+$utilities: map-merge-multiple(
+  $utilities,
+  (
+    "border": map-merge(map-get($utilities, "border"), (responsive: true),)
+  ),
+  (
+    "rounded": map-merge(
+      map-get($utilities, "rounded"),
+      (responsive: true),
+    )
+  ),
+  (
+    "height": map-merge(
+      map-get($utilities, "height"),
+      (responsive: true),
+    )
+  ),
+  (
+    "position": map-merge(
+      map-get($utilities, "position"),
+      (responsive: true),
+    )
+  ),
+  (
+    "font-size": map-merge(
+      map-get($utilities, "font-size"),
+      (responsive: true),
+    )
+  ),
+  (
+    "min-viewport-height": map-merge-multiple(
+      map-get($utilities, "min-viewport-height"),
+      (values: (100: 100vh, auto: auto)),
+      (responsive: true),
+    )
+  ),
+  (
+    "background-color": map-merge-multiple(
+      map-get($utilities, "background-color"),
+      (responsive: true),
+    )
+  ),
+  (
+    "color": map-merge-multiple(
+      map-get($utilities, "color"),
+      (responsive: true),
+    )
+  )
+);
+
+// Utilities
+@import "~bootstrap/scss/utilities/api";
+
+@import "~bootstrap/scss/mixins/banner";
+@include bsBanner("");
+
+// Layout & components
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/toasts";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/spinners";
+@import "~bootstrap/scss/placeholders";
+@import "~bootstrap/scss/offcanvas";
+
+// Helpers
+@import "~bootstrap/scss/helpers";
+
+// add fill class
+@each $color, $value in $theme-colors {
+  .fill-#{$color} {
+    fill: $value;
+  }
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+.icon-jarvis {
+  width: 1.5rem;
+  height: auto;
+}
+
+
+.vertical-block {
+  display: table;
+  height: 100%;
+  table-layout: fixed;
+  width: 100%;
+
+  .block-center-element {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.card {
+  box-shadow: var(--bs-card-box-shadow);
+}
+/* Canvas */
+.offcanvas-footer {
+  padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+}
