@@ -43,7 +43,7 @@ const toTaskDto = (task: TodoTask): TaskDto => {
 
 const validateName = (name: string): boolean => !!name && name.length <= 255;
 const validateDescription = (description: string): boolean => !!description && description.length <= 2000;
-const validateDueDate = (date: dayjs.Dayjs): boolean => date.isValid() && date.isBefore(dayjs());
+const validateDueDate = (date: dayjs.Dayjs): boolean => date.isValid() && date.isAfter(dayjs());
 
 export const getTasks = async (data: {
   filterName?: string,
@@ -76,7 +76,8 @@ export const getTasks = async (data: {
   } = await TodoTask.findAndCountAll({
     where: whereStatement,
     limit,
-    offset
+    offset,
+    order: [["id", "DESC"]]
   });
 
   const dtos = tasks.map(toTaskDto);

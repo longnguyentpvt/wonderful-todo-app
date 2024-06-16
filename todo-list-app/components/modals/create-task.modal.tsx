@@ -17,31 +17,76 @@ export type DetailModalProps = {
   onCreate: (name: string, description: string, dueDate: string) => void
 };
 
+type FormInput = "name" | "description" | "dueDate";
+
+type FormError = Record<FormInput, boolean>;
+
 const TaskModal: React.FC<DetailModalProps> = ({
   show, onHide, onCreate
 }) => {
   const [dueDate, setDueDate] = useState<dayjs.Dayjs | undefined>();
+  const [minDate, setMinDate] = useState<dayjs.Dayjs | undefined>();
   const nameRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
+  const [formError, setFormError] = useState<FormError>({
+    name: false,
+    description: false,
+    dueDate: false
+  });
 
   const onClose = (): void => {
     setDueDate(undefined);
     onHide();
+
+    if (nameRef.current) {
+      nameRef.current.value = "";
+    }
+    if (descRef.current) {
+      descRef.current.value = "";
+    }
+    setDueDate(undefined);
   };
 
   const create = (): void => {
     const name = nameRef.current?.value || "";
     const description = descRef.current?.value || "";
-    const dueDateFormatted = dueDate ? dueDate.toISOString() : "";
+    const dueDateFormatted = (dueDate && dueDate.isAfter(dayjs())) ? dueDate.toISOString() : "";
+
+    if (!name || !description || !dueDateFormatted) {
+      setFormError({
+        name: !name,
+        description: !description,
+        dueDate: !dueDateFormatted
+      });
+
+      return;
+    }
+
     onCreate(name, description, dueDateFormatted);
+  };
+
+  const onInputChange = (input: FormInput): void => {
+    setFormError((prev) => ({
+      ...prev,
+      [input]: false
+    }));
   };
 
   const onDateChange = (date: dayjs.Dayjs | null): void => {
     setDueDate(date || undefined);
+    onInputChange("dueDate");
   };
 
+  const onOpen = (): void => {
+    setMinDate(dayjs());
+  };
+
+  const {
+    name: invalidName, description: invalidDescription, dueDate: invalidDueDate
+  } = formError;
+
   return (
-    <Offcanvas show={ show } onHide={ onClose } placement="end">
+    <Offcanvas show={ show } onShow={ onOpen } onHide={ onClose } placement="end">
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>Detail</Offcanvas.Title>
       </Offcanvas.Header>
@@ -49,15 +94,31 @@ const TaskModal: React.FC<DetailModalProps> = ({
         <Row className="g-3">
           <Col xs={ 12 }>
             <FormLabel>Summary</FormLabel>
-            <FormControl type="text" placeholder="Enter name of your task" ref={ nameRef } />
+            <FormControl
+              isInvalid={ invalidName } type="text"
+              onChange={ () => onInputChange("name") }
+              placeholder="Enter name of your task" ref={ nameRef } maxLength={ 255 } />
+            <FormControl.Feedback type="invalid">
+              Please provide a valid summary.
+            </FormControl.Feedback>
           </Col>
           <Col xs={ 12 }>
             <FormLabel>Due date</FormLabel>
-            <DatePickerInput date={ dueDate } onDateChange={ onDateChange } withTime />
+            <DatePickerInput
+              isInvalid={ invalidDueDate } date={ dueDate } minDate={ minDate }
+              onDateChange={ onDateChange } withTime />
+            <FormControl.Feedback type="invalid" className={ `${ invalidDueDate ? "d-block" : "" }` }>
+              Please select a valid due date.
+            </FormControl.Feedback>
           </Col>
           <Col xs={ 12 }>
             <FormLabel>Description</FormLabel>
-            <FormControl as="textarea" rows={ 3 } placeholder="Enter name of your task" ref={ descRef } />
+            <FormControl
+              isInvalid={ invalidDescription } as="textarea" rows={ 3 } onChange={ () => onInputChange("description") }
+              placeholder="Enter name of your task" ref={ descRef } maxLength={ 2000 } />
+            <FormControl.Feedback type="invalid">
+              Please fill a valid description
+            </FormControl.Feedback>
           </Col>
         </Row>
       </Offcanvas.Body>

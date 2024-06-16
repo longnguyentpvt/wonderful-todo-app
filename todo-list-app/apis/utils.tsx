@@ -1,5 +1,4 @@
 import axios, { AxiosError, RawAxiosRequestHeaders, AxiosRequestConfig } from "axios";
-import dayjs from "dayjs";
 // import {
 //   getInfo, retrieveAuthToken
 // } from "model/user-account";
@@ -19,18 +18,7 @@ import {
 
 import { EventEmitter, EVENT_EMITTER_NAME } from "@app/utils/event-emitter";
 
-type InQueueApiRequest<T, E extends ApiResultError> = {
-  request: ApiRequest,
-  resolve: (value: ApiResponse<T, E>) => void,
-  requestTime: number,
-  onUploadProgress?: (progressEvent: ProgressEvent) => void
-};
-
-let lastApiTimeoutId: NodeJS.Timeout | null = null;
-const apiQueue:
-InQueueApiRequest<unknown, ApiErrorCode.SYSTEM_ERROR | ApiResultError>[] = [];
-
-const executeApi = async <T, E extends ApiResultError>(request: ApiRequest): Promise<ApiResponse<T, E>> => {
+export const executeApi = async <T, E extends ApiResultError>(request: ApiRequest): Promise<ApiResponse<T, E>> => {
   const {
     url,
     method,
@@ -84,7 +72,7 @@ const executeApi = async <T, E extends ApiResultError>(request: ApiRequest): Pro
         config.responseType = "blob";
       }
 
-      const apiVersion = "/apis/demo";
+      const apiVersion = "";
       const apiInstance = axios.create({ baseURL: `${ API_HOST_URL }${ apiVersion }` });
       const { data: responseData, status } = await apiInstance.request<T>(config);
 
@@ -136,78 +124,3 @@ const executeApi = async <T, E extends ApiResultError>(request: ApiRequest): Pro
     errorMsg
   };
 };
-
-const executorStart = (): void => {
-  if (lastApiTimeoutId) {
-    clearTimeout(lastApiTimeoutId);
-  }
-
-  lastApiTimeoutId = setTimeout(() => {
-    enqueueApi();
-  }, 100);
-};
-
-const enqueueApi = async (): Promise<void> => {
-  const nowMoment = dayjs();
-
-  if (apiQueue.length <= 0) {
-    executorStart();
-    return;
-  }
-
-  let foundApiRequest:
-  InQueueApiRequest<unknown, ApiErrorCode.SYSTEM_ERROR | ApiResultError> | undefined;
-  do {
-    const apiRequest = apiQueue.shift();
-    if (!apiRequest) return;
-    const {
-      requestTime,
-      resolve
-    } = apiRequest;
-
-    const rqTimeMm = dayjs(requestTime);
-
-    if (nowMoment.isAfter(rqTimeMm.add(1, "minutes"))) {
-      setTimeout(() => {
-        resolve({
-          data: null,
-          errorCode: ApiErrorCode.SYSTEM_ERROR
-        });
-      });
-    } else {
-      foundApiRequest = apiRequest;
-    }
-  } while (!foundApiRequest && apiQueue.length > 0);
-
-  executorStart();
-
-  if (!foundApiRequest) return;
-  const {
-    request,
-    resolve
-  } = foundApiRequest;
-
-  const rp = await executeApi(request);
-  if (rp.errorCode) {
-    apiQueue.push({
-      resolve,
-      request,
-      requestTime: dayjs()
-        .valueOf()
-    });
-  } else {
-    resolve(rp);
-  }
-};
-
-export const mainApi = async <T, E extends ApiResultError>(request: ApiRequest):
-Promise<ApiResponse<T, E>> => new Promise<ApiResponse<T, E>>((resolve) => {
-  apiQueue.push({
-    request,
-    resolve: (resolve as (value: ApiResponse<unknown, ApiErrorCode.SYSTEM_ERROR | ApiResultError>) => void),
-    requestTime: dayjs()
-      .valueOf()
-  });
-});
-
-executorStart();

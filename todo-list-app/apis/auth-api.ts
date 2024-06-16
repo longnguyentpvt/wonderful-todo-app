@@ -2,7 +2,7 @@ import { ApiRequest, ApiResult } from "@app/types/api";
 
 import { ApiErrorCode } from "@app/data/api";
 
-import { mainApi } from "./utils";
+import { executeApi } from "./utils";
 
 export type AuthResponse = {
   accountId: number,
@@ -21,5 +21,5 @@ export const loginWithEmailAndPassword = async (requestData: {
   };
   console.log("request", request);
 
-  return mainApi(request);
+  return executeApi(request);
 };
