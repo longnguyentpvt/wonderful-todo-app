@@ -1,0 +1,15 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.rulers": [
+    140
+  ],
+  "eslint.validate": ["javascript", "typescript"],
+  "eslint.workingDirectories" : [
+    "./todo-list-app",
+    "./todo-list-rest-server",
+  ],
+  "eslint.nodePath": "./node_modules",
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

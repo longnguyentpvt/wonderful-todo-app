@@ -1,0 +1,23 @@
+{
+  "name": "@todo-app/monorepo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Nick",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  },
+  "scripts": {
+    "prepare": "husky && yarn rest-server && yarn fe-app && yarn dev-configs",
+    "rest-server": "yarn --cwd todo-list-rest-server",
+    "fe-app": "yarn --cwd todo-list-app",
+    "dev-configs": "yarn --cwd dev-configs",
+    "e2e-testing": "yarn --cwd e2e-testing",
+    "dev:server": "yarn rest-server dev",
+    "dev:fe": "yarn fe-app dev",
+    "lint": "yarn rest-server lint && yarn fe-app lint",
+    "test": "yarn rest-server test && yarn fe-app test",
+    "test:e2e": "yarn e2e-testing test",
+    "build": "yarn rest-server build && yarn fe-app build"
+  } 
+}
