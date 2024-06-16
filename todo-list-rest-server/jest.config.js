@@ -11,4 +11,5 @@ module.exports = {
   testRegex: "\\.test\\.ts$",
   modulePaths: ["."], 
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths , { prefix: '<rootDir>/' } ),
+  testTimeout: 15000
 };

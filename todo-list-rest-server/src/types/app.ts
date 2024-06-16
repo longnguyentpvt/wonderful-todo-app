@@ -1,4 +1,6 @@
 import { Request, Router } from "express";
+// eslint-disable-next-line import/no-unresolved
+import { ParamsDictionary, Query } from "express-serve-static-core";
 
 export interface AppController {
   initRoute: () => Router
@@ -20,8 +22,14 @@ export interface ApiError extends Partial<Error> {
   statusCode?: number
 }
 
-export interface AuthRequest extends Request {
-  account?: {
+export interface AuthRequest<
+  P = ParamsDictionary,
+  ResBody = unknown,
+  ReqBody = unknown,
+  ReqQuery = Query,
+  Locals extends Record<string, unknown> = Record<string, unknown>
+  > extends Request<P, ResBody, ReqBody, ReqQuery, Locals> {
+  account: {
     id: number,
     scopes: string[],
     token: string

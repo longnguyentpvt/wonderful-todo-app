@@ -1,6 +1,5 @@
 import {
   Model,
-  DataTypes,
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
@@ -11,7 +10,6 @@ import {
 
 import { TaskStatus } from "@app/types/models";
 
-import sequelize from "../seq";
 import { UserAccount } from "./UserAccount";
 
 export class TodoTask
@@ -28,9 +26,7 @@ export class TodoTask
 
   declare dueDate: Date;
 
-  declare completedAt: CreationOptional<Date>;
-
-  declare deletedAt: CreationOptional<Date>;
+  declare completedAt: CreationOptional<Date | null>;
 
   declare updatedAt: CreationOptional<Date>;
 
@@ -42,25 +38,3 @@ export class TodoTask
     owner: Association<TodoTask, UserAccount>;
   };
 }
-
-TodoTask.init({
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  summary: { type: DataTypes.STRING },
-  description: { type: DataTypes.STRING },
-  status: { type: DataTypes.STRING },
-  dueDate: { type: DataTypes.DATE },
-  completedAt: { type: DataTypes.DATE },
-  deletedAt: { type: DataTypes.DATE },
-  createdAt: { type: DataTypes.DATE },
-  updatedAt: { type: DataTypes.DATE }
-}, {
-  sequelize,
-  modelName: "todo_task",
-  freezeTableName: true,
-  createdAt: "createdAt",
-  updatedAt: "updatedAt"
-});

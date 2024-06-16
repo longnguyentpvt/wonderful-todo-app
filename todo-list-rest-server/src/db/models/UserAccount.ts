@@ -1,12 +1,9 @@
 import {
   CreationOptional,
   Model,
-  DataTypes,
   InferAttributes,
   InferCreationAttributes
 } from "sequelize";
-
-import sequelize from "../seq";
 
 export class UserAccount
   extends Model<InferAttributes<UserAccount>, InferCreationAttributes<UserAccount>> {
@@ -22,22 +19,3 @@ export class UserAccount
 
   declare updatedAt: Date;
 }
-
-UserAccount.init({
-  id: {
-    type: DataTypes.BIGINT,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: { type: DataTypes.BIGINT },
-  email: { type: DataTypes.BIGINT },
-  password: { type: DataTypes.BIGINT },
-  createdAt: { type: DataTypes.DATE },
-  updatedAt: { type: DataTypes.DATE }
-}, {
-  sequelize,
-  modelName: "user_account",
-  freezeTableName: true,
-  createdAt: "createdAt",
-  updatedAt: "updatedAt"
-});
