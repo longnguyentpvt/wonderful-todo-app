@@ -1,5 +1,3 @@
-import { faker } from "@faker-js/faker";
-import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import {
@@ -189,23 +187,6 @@ export default function Home(): React.ReactElement {
 
   useEffect(() => {
     fetchData();
-
-    const now = dayjs();
-    const fromDate = dayjs(now).subtract(10, "day").toDate();
-    const toDate = dayjs(now).subtract(10, "day").toDate();
-    const statuses: TaskStatus[] = ["Pending", "InProgress", "Done"];
-    const newTasks: TaskInfo[] = [];
-    for (let i = 0; i < 24; i += 1) {
-      newTasks.push({
-        id: i,
-        name: `${ faker.lorem.sentence({ min: 3, max: 10 }) }`,
-        description: `${ faker.lorem.paragraph({ min: 1, max: 3 }) }`,
-        dueDate: dayjs(faker.date.between({ from: fromDate, to: toDate })).toISOString(),
-        status: statuses[faker.number.int({ min: 0, max: 2 })]
-      });
-    }
-
-    setTasks(newTasks);
   }, []);
 
   const detailModalShow = !!selectedTask;
@@ -265,7 +246,7 @@ export default function Home(): React.ReactElement {
             </div>
           </div>
 
-          <LoadingSpinner loading={ loading } />
+          <LoadingSpinner loading={ loading } fullPage />
         </MainLayout>
 
         <DetailModal show={ detailModalShow } onHide={ closeDetailModal } data={ selectedTask } onAction={ onTaskAction } />
